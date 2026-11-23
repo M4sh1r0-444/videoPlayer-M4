@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>图6 迁移路线</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .phase-row { display: flex; align-items: stretch; gap: 0; }
+  .phase { flex: 1; background: #fff; border: 1px solid #d8e0ea; border-radius: 12px; padding: 12px 13px; position: relative; display: flex; flex-direction: column; }
+  .phase .ph { display: flex; align-items: baseline; gap: 7px; }
+  .phase .pid { font-size: 12px; font-weight: 700; color: #2f6ff2; letter-spacing: 1px; }
+  .phase .days { margin-left: auto; font-size: 10.5px; color: #64748b; background: #f1f5f9; border-radius: 999px; padding: 2px 7px; }
+  .phase .pt { font-size: 13.5px; font-weight: 700; margin-top: 5px; }
+  .phase .list { margin-top: 8px; font-size: 11px; color: #475569; line-height: 1.7; }
+  .phase .list b { color: #0f172a; font-weight: 600; }
+  .phase .gate { margin-top: auto; padding-top: 10px; }
+  .phase .gate .g { font-size: 10.5px; color: #0b7a4b; background: #e7f6ef; border: 1px solid #bfe5d1; border-radius: 6px; padding: 4px 7px; line-height: 1.45; }
+  .phase .back { font-size: 10px; color: #94a3b8; margin-top: 6px; }
+  .phase.p0 { border-color: #bcd0f7; background: #f7faff; }
+  .phase.p3 { border-color: #f0b9bd; background: #fef8f8; }
+  .phase.p4 { border-color: #bfe5d1; background: #f7fdfa; }
+  .arr { flex: none; width: 24px; display: flex; align-items: center; justify-content: center; color: #b6c2d2; font-size: 15px; }
+
+  .lane { display: flex; margin: 0 0 10px; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; }
+  .lane .seg { padding: 6px 10px; font-size: 10.5px; color: #475569; background: #f8fafc; border-right: 1px solid #e2e8f0; }
+  .lane .seg:last-child { border-right: none; }
+  .lane .seg b { color: #0f172a; }
+
+  .sum { display: flex; gap: 14px; align-items: stretch; margin-top: 20px; }
+  .sum .card { flex: 1; }
+  .big { font-size: 22px; font-weight: 700; letter-spacing: -.5px; }
+  .big small { font-size: 11px; font-weight: 400; color: #64748b; margin-left: 4px; }
+</style>
+</head>
+<body>
+<div id="zoom">
+<figure class="fig">
+  <header class="fig-head">
+    <div class="kicker">图 6 · 迁移路线</div>
+    <h1>五个阶段，每阶段都能独立发布、独立回滚</h1>
+    <p class="sub">原则：先「不动行为地拆」、再「换渲染方式」、最后「换布局与工程化」。P2 起提供 <span class="mono">?legacy=1</span> 回退开关，出问题用户可自助退回旧界面</p>
+  </header>
+
+  <div class="stage">
+    <div class="lane">
+      <div class="seg" style="flex:none; background:#f8fafc"><b>阶段性质</b></div>
+      <div class="seg" style="flex:1"><b>基线</b>：只加护栏（P0）</div>
+      <div class="seg" style="flex:2.2; background:#eff5ff; color:#1d4ed8"><b>结构重构</b>：行为不变，可逐像素对照（P1–P2）</div>
+      <div class="seg" style="flex:1; background:#fdf3f4; color:#b42318"><b>体验升级</b>：有视觉变化，需确认（P3）</div>
+      <div class="seg" style="flex:1; background:#eefaf3; color:#0b7a4b"><b>工程化</b>：可独立回退（P4）</div>
+    </div>
+
+    <div class="phase-row">
+      <div class="phase p0">
+        <div class="ph"><span class="pid">P0</span><span class="days">0.5 天</span></div>
+        <div class="pt">基线固化</div>
+        <div class="list">
+          <b>·</b> 截图基线（4 个视图 × 2 主题）<br>
+          <b>·</b> CDP 冒烟脚本 <span class="mono">scripts/smoke.mjs</span><br>
+          <b>·</b> 冻结 <span class="mono">mac/renderer</span>，记录差异清单<br>
+          <b>·</b> 备份 <span class="mono">learn.json</span> 样例数据
+        </div>
+        <div class="gate"><div class="g">门：脚本一键判断「播放/续播/搜索/AI/导入」五条主链路</div></div>
+        <div class="back">回滚：无代码改动</div>
+      </div>
+      <div class="arr">→</div>
+
+      <div class="phase">
+        <div class="ph"><span class="pid">P1</span><span class="days">1.5 天</span></div>
+        <div class="pt">抽纯函数与基础设施</div>
+        <div class="list">
+          <b>·</b> <span class="mono">core/</span>：episode / format / docmatch / progress（+ <span class="mono">node --test</span>）<br>
+          <b>·</b> 主进程改共享解析，删重复实现<br>
+          <b>·</b> <span class="mono">ui/</span>：dom / dialog / toast / splitter / shortcuts<br>
+          <b>·</b> 保持 <span class="mono">renderer.js</span> 调用旧 API，行为不变
+        </div>
+        <div class="gate"><div class="g">门：单测全绿 + 五条主链路与基线截图一致</div></div>
+        <div class="back">回滚：单 commit revert</div>
+      </div>
+      <div class="arr">→</div>
+
+      <div class="phase">
+        <div class="ph"><span class="pid">P2</span><span class="days">2 天</span></div>
+        <div class="pt">壳 + 主视图 + 增量渲染</div>
+        <div class="list">
+          <b>·</b> <span class="mono">store / actions / selectors / persist</span><br>
+          <b>·</b> shell / sidebar / episode-list / player<br>
+          <b>·</b> keyed 列表 + 事件委托 + 懒加载时长<br>
+          <b>·</b> <span class="mono">?legacy=1</span> 双轨运行一个版本
+        </div>
+        <div class="gate"><div class="g">门：DOM 重建次数 = 0；焦点/悬停/滚动无回归</div></div>
+        <div class="back">回滚：URL 开关即时切回</div>
+      </div>
+      <div class="arr">→</div>
+
+      <div class="phase p3">
+        <div class="ph"><span class="pid">P3</span><span class="days">1.5 天</span></div>
+        <div class="pt">停靠区 / AI / 无障碍</div>
+        <div class="list">
+          <b>·</b> dock 页签（讲义 / AI），迁移 ai.js<br>
+          <b>·</b> <span class="mono">&lt;dialog&gt;</span> + focus trap + Esc<br>
+          <b>·</b> 快捷键服务 + 「?」帮助面板<br>
+          <b>·</b> aria-label / role / aria-live 补全
+        </div>
+        <div class="gate"><div class="g">门：键盘全流程可完成；播放器 ≥420px；标题截断 0</div></div>
+        <div class="back">回滚：关闭 dock 开关，旧讲义浮层保留一个版本</div>
+      </div>
+      <div class="arr">→</div>
+
+      <div class="phase p4">
+        <div class="ph"><span class="pid">P4</span><span class="days">1 天</span></div>
+        <div class="pt">构建与双端合一</div>
+        <div class="list">
+          <b>·</b> esbuild 单文件哈希产物，删除 <span class="mono">?v=N</span><br>
+          <b>·</b> vendor 由 npm 脚本同步，记录版本<br>
+          <b>·</b> 平台适配层合并 <span class="mono">mac/</span>，删除副本<br>
+          <b>·</b> 打包双平台 + 冒烟脚本回归
+        </div>
+        <div class="gate"><div class="g">门：asar 内资源完整；冷启动无 Code Cache 旧字节码</div></div>
+        <div class="back">回滚：保留 P3 的直载源码目录</div>
+      </div>
+    </div>
+
+    <div class="sum">
+      <div class="card accent">
+        <div class="c-title"><span>总投入</span></div>
+        <div class="big">6.5 人日 <small>≈ 1.5 周（单人）</small></div>
+        <div class="c-sub">可拆成 5 次发布；P0+P1 无行为变化，可先合入。</div>
+      </div>
+      <div class="card">
+        <div class="c-title"><span>并行机会</span></div>
+        <div class="c-sub">P0 的冒烟脚本可与 P1 并行；P3 的无障碍项与 P2 的列表重构互不依赖，可两人分头做。</div>
+      </div>
+      <div class="card">
+        <div class="c-title"><span>硬依赖</span></div>
+        <div class="c-sub">P4 删除 <span class="mono">mac/</span> 副本前必须完成 M8.3 真机验收；否则只做「共享源码 + 保留副本」的过渡态。</div>
+      </div>
+      <div class="card">
+        <div class="c-title"><span>不建议</span></div>
+        <div class="c-sub">不要在一次提交里同时改「渲染方式 + 布局 + 视觉」；出问题时无法定位是哪一类改动引入的。</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="footnote">工期为单人净编码日，不含评审与真机验收等待；每阶段结束都跑一遍 P0 的冒烟脚本与截图对比，作为进入下一阶段的门禁。</p>
+</figure>
+</div>
+<script>
+  (function () {
+    const s = new URLSearchParams(location.search).get('scale') || '1';
+    document.documentElement.dataset.scale = s;
+    document.getElementById('zoom').style.zoom = s;
+  })();
+</script>
+</body>
+</html>

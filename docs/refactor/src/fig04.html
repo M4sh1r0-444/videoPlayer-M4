@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>图4 组件树与状态边界</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .tree { font-size: 12px; color: #334155; }
+  .tree ul { list-style: none; margin: 0; padding-left: 18px; position: relative; }
+  .tree > ul { padding-left: 0; }
+  .tree li { position: relative; padding: 3px 0 3px 16px; }
+  .tree li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: #dbe3ee; }
+  .tree li:last-child::before { bottom: auto; height: 15px; }
+  .tree li::after { content: ""; position: absolute; left: 0; top: 15px; width: 11px; height: 1px; background: #dbe3ee; }
+  .tree > ul > li::before, .tree > ul > li::after { display: none; }
+  .tree > ul > li { padding-left: 0; }
+  .node { display: inline-flex; align-items: baseline; gap: 7px; padding: 4px 9px; border-radius: 7px; background: #fff; border: 1px solid #d8e0ea; }
+  .node .n { font-weight: 600; color: #0f172a; font-family: Consolas, "Courier New", monospace; font-size: 12px; }
+  .node .d { color: #7c8798; font-size: 10.5px; }
+  .node.root { background: #ebf1fe; border-color: #bcd0f7; }
+  .node.view { background: #f3f7ff; border-color: #cfe0fb; }
+  .node.leaf { background: #fff; }
+  .node.overlay { background: #f8fafc; border-style: dashed; }
+  .node .own { font-size: 10px; color: #2f6ff2; background: #eef4ff; border: 1px solid #d5e2fb; border-radius: 999px; padding: 1px 6px; }
+  table.slices { width: 100%; border-collapse: collapse; font-size: 11px; }
+  table.slices th { text-align: left; color: #64748b; font-weight: 600; padding: 6px 8px; background: #f1f5f9; border-bottom: 1px solid #dde5ef; }
+  table.slices td { padding: 6px 8px; border-bottom: 1px solid #e7edf5; color: #334155; vertical-align: top; }
+  table.slices td b { color: #0f172a; font-family: Consolas, "Courier New", monospace; font-size: 11px; }
+  .persist { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11px; color: #475569; margin-top: 10px; }
+  .persist .b { background: #fff; border: 1px solid #d8e0ea; border-radius: 6px; padding: 4px 8px; }
+  .persist .a { color: #94a3b8; }
+</style>
+</head>
+<body>
+<div id="zoom">
+<figure class="fig">
+  <header class="fig-head">
+    <div class="kicker">图 4 · 组件与状态</div>
+    <h1>谁拥有状态、谁只读：组件树与五个状态切片</h1>
+    <p class="sub">目标是「一个组件只管一块 DOM、一个切片只管一类数据」；括号里的 <span class="mono">own</span> 表示该组件持有本地 UI 状态（展开、输入中、悬停），其余一律走 store</p>
+  </header>
+
+  <div class="stage">
+    <div class="row" style="align-items:flex-start">
+      <div class="card" style="flex:1.12">
+        <div class="c-title"><span>组件树（renderer/）</span><span class="badge-line">文件 → 组件 → 子组件</span></div>
+        <div class="tree" style="margin-top:12px">
+          <ul>
+            <li>
+              <span class="node root"><span class="n">app.js</span><span class="d">组合根 · 装配 store/api/视图</span></span>
+              <ul>
+                <li>
+                  <span class="node view"><span class="n">shell.js</span><span class="d">顶栏 + 内容区 + 视图切换</span></span>
+                  <ul>
+                    <li><span class="node"><span class="n">topbar.js</span><span class="d">品牌 / 面包屑 / 命令搜索 / 进度 / 动作</span><span class="own">own: 搜索框焦点</span></span></li>
+                    <li>
+                      <span class="node view"><span class="n">library-view.js</span><span class="d">三栏 + 停靠区</span></span>
+                      <ul>
+                        <li><span class="node"><span class="n">sidebar.js</span><span class="d">科目/课程树 · role=tree</span><span class="own">own: 折叠态</span></span></li>
+                        <li>
+                          <span class="node"><span class="n">episode-list.js</span><span class="d">keyed 增量更新 · 事件委托</span></span>
+                          <ul>
+                            <li><span class="node leaf"><span class="n">episode-row.js</span><span class="d">两行式：标题 + 元信息</span><span class="own">own: 悬停</span></span></li>
+                          </ul>
+                        </li>
+                        <li>
+                          <span class="node"><span class="n">player.js</span><span class="d">video 生命周期 / 进度持久化</span></span>
+                          <ul>
+                            <li><span class="node leaf"><span class="n">video-stage.js</span><span class="d">画面 / 兜底浮层 / 拖入提示</span></span></li>
+                            <li><span class="node leaf"><span class="n">control-bar.js</span><span class="d">播放/进度/音量/倍速/全屏</span></span></li>
+                          </ul>
+                        </li>
+                        <li>
+                          <span class="node view"><span class="n">dock.js</span><span class="d">右侧停靠区（页签：讲义 / AI / 笔记）</span><span class="own">own: 当前页签</span></span>
+                          <ul>
+                            <li><span class="node leaf"><span class="n">docs-panel.js</span><span class="d">讲义列表 / 关联 / 移除</span></span></li>
+                            <li><span class="node leaf"><span class="n">ai-panel.js</span><span class="d">会话 / 流式 / 截图提问（由 ai.js 迁移）</span></span></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                    <li><span class="node view"><span class="n">dashboard-view.js</span><span class="d">继续学习 / 科目进度 / 本周统计</span></span></li>
+                    <li><span class="node overlay"><span class="n">overlays</span><span class="d">toast / settings-dialog / import-dialog / command-palette</span></span></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="c-sub" style="margin-top:12px">组件契约统一为 <span class="mono">mount(container, ctx) → { update(state), destroy() }</span>；<span class="mono">ctx = { store, api, shortcuts, toast }</span>。查看、播放、停靠三个组件互不 import。</div>
+      </div>
+
+      <div style="flex:.88; display:flex; flex-direction:column; gap:14px">
+        <div class="card">
+          <div class="c-title"><span>状态切片与读写关系</span></div>
+          <table class="slices">
+            <tr><th>切片</th><th>内容</th><th>写入者</th><th>订阅者</th></tr>
+            <tr><td><b>library</b></td><td>科目树、当前课程、分集、讲义</td><td>scan / import</td><td>sidebar · list · dock</td></tr>
+            <tr><td><b>playback</b></td><td>当前集、位置、倍速、音量</td><td>player actions</td><td>player · list · dashboard</td></tr>
+            <tr><td><b>ui</b></td><td>视图、栏宽、折叠、主题、筛选词</td><td>ui actions</td><td>shell · styles</td></tr>
+            <tr><td><b>ai</b></td><td>配置、消息、流式状态</td><td>ai actions</td><td>ai-panel</td></tr>
+            <tr><td><b>stats</b></td><td>每日观看秒数、完成集数</td><td>persist progress</td><td>dashboard</td></tr>
+          </table>
+          <div class="c-sub" style="margin-top:8px">旧的全局 <span class="mono">state</span> 一分为五；跨切片读取只能走 <span class="mono">selectors</span>（例如 <span class="mono">currentEpisode(state)</span>），禁止组件各自拼装。</div>
+        </div>
+
+        <div class="card accent">
+          <div class="c-title"><span>持久化边界</span></div>
+          <div class="persist">
+            <span class="b">actions</span><span class="a">→</span>
+            <span class="b">persist.queue(patch)</span><span class="a">→</span>
+            <span class="b">debounce 300ms</span><span class="a">→</span>
+            <span class="b">api.updateStore</span>
+          </div>
+          <div class="c-sub" style="margin-top:8px">只有 <span class="mono">persist</span> 调 IPC；<span class="mono">beforeunload / visibilitychange / 换集</span> 时 <span class="mono">flush()</span>。数据形状与 v0.4.4 完全一致，无需迁移。</div>
+        </div>
+
+        <div class="card ok">
+          <div class="c-title"><span>收益</span></div>
+          <div class="c-sub">
+            ① ai.js 不再依赖 renderer.js 的全局，可独立开发与测试；<br>
+            ② 列表组件只订阅 <span class="mono">playback + library.episodes</span>，看板只订阅 <span class="mono">stats</span>，互不牵连；<br>
+            ③ 每个组件可单独在空白页挂载调试，不再需要跑整套应用。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="footnote">拆分粒度刻意保守：不按「一个函数一个文件」切，也不引入组件基类；组件内部仍可用 <span class="mono">h()</span> 拼 DOM，避免为了抽象而抽象。判断标准只有一条——<b>这个文件能不能在不启动应用的情况下被单独理解</b>。</p>
+</figure>
+</div>
+<script>
+  (function () {
+    const s = new URLSearchParams(location.search).get('scale') || '1';
+    document.documentElement.dataset.scale = s;
+    document.getElementById('zoom').style.zoom = s;
+  })();
+</script>
+</body>
+</html>

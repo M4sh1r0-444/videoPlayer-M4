@@ -1,0 +1,32 @@
+node_modules/
+dist/
+*.log
+
+# 本地构建缓存 / 临时脚本（P4）
+.npm-cache/
+.tmp/
+
+# 重构前的源码/数据快照（P0 回滚用，不入库）
+.backup/
+
+# 助手 / 沙箱的本机产物（会话计划、权限修复脚本与报告），不入库
+.zcode/
+.dsh-acl-recovery/
+ui-audit/acl-recovery-*/
+
+# 不公开：旧的 macOS 隔离副本及其冻结清单 / 冻结脚本（只保留在本地）
+/mac/
+/scripts/freeze-mac.cjs
+/docs/refactor/mac-freeze.json
+
+# 不公开：各阶段的 AI 工作记录、真实资料库截图、阶段截图留档
+/docs/refactor/P*-完成记录.md
+/docs/refactor/P*-交接提示词.md
+/docs/refactor/现状-*.png
+/docs/refactor/phase2/
+
+# 不公开：ui-audit 的截图与设计板（仓库里只保留 .mjs 脚本）
+/ui-audit/*.png
+/ui-audit/frosted-shots/
+/ui-audit/liquid-shots/
+/ui-audit/baseline-before-*/

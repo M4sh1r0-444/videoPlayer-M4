@@ -1,0 +1,4 @@
+{
+  "//": "让 Node 把本目录的 .js 视为 ES Module（主进程用 import() 复用同一份源码）；浏览器忽略此文件。",
+  "type": "module"
+}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>图2 目标分层与数据流</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="zoom">
+<figure class="fig">
+  <header class="fig-head">
+    <div class="kicker">图 2 · 目标</div>
+    <h1>分层 + 单向数据流：把「隐式耦合」换成「显式边界」</h1>
+    <p class="sub">原生 ES Module（file:// 下可用，已实测）+ 30 行 store；不引入框架、不改变 IPC 与数据模型，主进程只做两处收敛</p>
+  </header>
+
+  <div class="stage">
+    <div class="row" style="align-items:flex-start">
+      <!-- 左：分层 -->
+      <div style="flex:1.18; display:flex; flex-direction:column; gap:10px">
+        <div class="tier-label"><span class="tag">分层</span><span class="plain">自下而上的依赖方向，箭头只能朝下</span></div>
+
+        <div class="card tint">
+          <div class="c-title"><span class="mono">main.js</span><span class="badge-line">不变：扫描 / 存储 / ffmpeg / IPC</span></div>
+          <div class="c-sub">只改两处：① 分集解析改为动态 <span class="mono">import()</span> 共享 <span class="mono">core/episode.js</span>；② ffmpeg 探测按平台分支（合并 mac 补丁）。</div>
+        </div>
+
+        <div class="arrow-y">↕ IPC（26 个通道保持不变）</div>
+
+        <div class="card">
+          <div class="c-title"><span class="mono">preload.js</span><span class="badge-line">window.api · 唯一特权入口</span></div>
+          <div class="c-sub">保持 contextBridge；新增 <span class="mono">api.js</span> 在渲染层做一层薄封装：统一错误、统一返回值形状，组件不直接碰 <span class="mono">window.api</span>。</div>
+        </div>
+
+        <div class="arrow-y">↓</div>
+
+        <div class="card accent">
+          <div class="c-title"><span class="mono">app.js</span><span>组合根（约 120 行）</span></div>
+          <div class="kv">
+            <b>职责</b><span>创建 store / api / 快捷键 / 主题；挂载 Shell；处理 <span class="mono">?legacy=1</span> 回退开关</span>
+            <b>不负责</b><span>任何业务渲染——只做装配，不放 if 分支大杂烩</span>
+          </div>
+        </div>
+
+        <div class="arrow-y">↓</div>
+
+        <div class="card">
+          <div class="c-title"><span class="mono">views/</span><span class="badge-line">页面级：各管一块布局</span></div>
+          <div class="chips"><span class="chip blue">shell.js</span><span class="chip">library-view.js</span><span class="chip">dashboard-view.js</span></div>
+        </div>
+
+        <div class="arrow-y">↓</div>
+
+        <div class="card">
+          <div class="c-title"><span class="mono">components/</span><span class="badge-line">可复用视图：mount / update / destroy</span></div>
+          <div class="chips">
+            <span class="chip">topbar</span><span class="chip">sidebar</span><span class="chip">episode-list</span>
+            <span class="chip">player</span><span class="chip">dock</span><span class="chip">ai-panel</span>
+            <span class="chip">docs-panel</span><span class="chip">dialogs</span><span class="chip">dashboard</span>
+          </div>
+        </div>
+
+        <div class="arrow-y">↓</div>
+
+        <div class="row" style="gap:10px">
+          <div class="card" style="flex:1">
+            <div class="c-title"><span class="mono">data/</span></div>
+            <div class="c-sub"><b>store.js</b> 状态 + 订阅；<b>actions.js</b> 唯一写入口；<b>selectors.js</b> 派生数据（记忆化）；<b>persist.js</b> 300ms 防抖落盘。</div>
+          </div>
+          <div class="card" style="flex:1">
+            <div class="c-title"><span class="mono">core/</span><span class="badge-line">纯函数</span></div>
+            <div class="c-sub">episode / format / docmatch / search / progress：无 DOM、无 IPC、可 <span class="mono">node --test</span>，主进程与渲染层共享。</div>
+          </div>
+        </div>
+
+        <div class="arrow-y">↓</div>
+
+        <div class="card dark">
+          <div class="c-title" style="color:#e2e8f0"><span class="mono">styles/</span><span class="badge-line" style="color:#94a3b8">tokens → base → layout → components</span></div>
+          <div class="c-sub" style="color:#94a3b8">只保留 <span class="mono">.class</span> 选择器与 CSS 变量；断点写进 <span class="mono">layout.css</span>，容器查询替代 JS 宽度计算。</div>
+        </div>
+      </div>
+
+      <!-- 右：数据流 + 规则 -->
+      <div style="flex:.82; display:flex; flex-direction:column; gap:10px">
+        <div class="tier-label"><span class="tag">运行时</span><span class="plain">一次状态变更的完整路径</span></div>
+
+        <div class="card" style="padding:14px 16px">
+          <div class="flow-step">
+            <span class="step-n">1</span>
+            <div><b>用户事件</b><div class="small muted">点击分集 / 快捷键 / 拖拽 —— 事件委托到容器，只有 1 个监听器</div></div>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">
+            <span class="step-n">2</span>
+            <div><b>action</b><div class="small muted"><span class="mono">playEpisode(3)</span> —— 唯一能改状态的地方，顺带触发持久化</div></div>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">
+            <span class="step-n">3</span>
+            <div><b>store.set</b><div class="small muted">不可变更新 + 通知订阅者；同一帧内合并多次写入</div></div>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">
+            <span class="step-n">4</span>
+            <div><b>selector → component.update</b><div class="small muted">每个组件只订阅自己关心的切片；派生值记忆化，避免重复计算</div></div>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">
+            <span class="step-n">5</span>
+            <div><b>DOM patch</b><div class="small muted">列表按 key 复用节点，只改变化行的文本与 class</div></div>
+          </div>
+        </div>
+
+        <div class="card accent" style="margin-top:2px">
+          <div class="c-title"><span class="num blue">!</span><span>持久化只走一条路</span></div>
+          <div class="c-sub"><span class="mono">actions → persist.queue(patch) → debounce 300ms → api.updateStore()</span><br>组件不写盘、不调 IPC；退出/隐藏/换集时 <span class="mono">flush()</span> 一次，杜绝丢进度。</div>
+        </div>
+
+        <div class="card">
+          <div class="c-title"><span>四条依赖规则（Code Review 时逐条对照）</span></div>
+          <div class="rules">
+            <div><b>①</b> components 不 import <span class="mono">window.api</span>，只拿 <span class="mono">ctx.api</span></div>
+            <div><b>②</b> core 不 import DOM / Node / Electron，连 <span class="mono">document</span> 都不出现</div>
+            <div><b>③</b> 只有 actions 能写 store；组件只读 + dispatch</div>
+            <div><b>④</b> views 不写具体布局像素，尺寸交给 styles 的断点</div>
+          </div>
+        </div>
+
+        <div class="card ok" style="margin-top:2px">
+          <div class="c-title"><span>对用户的承诺：这些不变</span></div>
+          <div class="chips">
+            <span class="chip">learn.json 结构</span>
+            <span class="chip">全部快捷键</span>
+            <span class="chip">深/浅色视觉</span>
+            <span class="chip">CSP 策略</span>
+            <span class="chip">26 个 IPC 通道</span>
+            <span class="chip">完全离线</span>
+          </div>
+          <div class="c-sub">重构只改代码组织与页面布局：不迁移数据、不联网、不新增运行时依赖；旧 <span class="mono">learn.json</span> 直接可用。</div>
+        </div>
+
+        <div class="tagline">体积预期：源码 8~10 个模块文件；打包后 &lt; 80KB（不含 vendor）</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="footnote">实现取舍：不引入 React/Vue（本应用无路由、无并发渲染需求，框架的收益不抵 CSP、构建与包体成本）；<b>ES Module 直接在 file:// 下加载</b>已在 Electron 44 / Chromium 152 实测通过，因此开发期零构建，仅在 P4 增加 esbuild 产出单文件哈希包以解决缓存失效与体积。</p>
+</figure>
+</div>
+
+<style>
+  .flow-step { display: flex; gap: 10px; align-items: flex-start; }
+  .step-n {
+    flex: none; width: 20px; height: 20px; border-radius: 6px; margin-top: 1px;
+    background: #ebf1fe; color: #2f6ff2; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flow-step b { font-size: 12.5px; }
+  .flow-step .small { margin-top: 2px; line-height: 1.5; }
+  .flow-arrow { color: #c2ccda; font-size: 13px; line-height: 1; margin: 5px 0 5px 9px; }
+  .rules { display: flex; flex-direction: column; gap: 6px; margin-top: 9px; font-size: 11px; color: #475569; line-height: 1.55; }
+  .rules b { color: #2f6ff2; margin-right: 4px; }
+</style>
+<script>
+  (function () {
+    const s = new URLSearchParams(location.search).get('scale') || '1';
+    document.documentElement.dataset.scale = s;
+    document.getElementById('zoom').style.zoom = s;
+  })();
+</script>
+</body>
+</html>

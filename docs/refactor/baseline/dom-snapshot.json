@@ -1,0 +1,845 @@
+{
+  "generatedAt": "2026-10-23T02:53:32.460Z",
+  "views": {
+    "course-dark": {
+      "view": "course-dark",
+      "theme": "dark",
+      "documentTitle": "学习播放器",
+      "topbarButtons": [
+        "",
+        "首页",
+        "AI",
+        "讲义",
+        "目录",
+        "导入",
+        "",
+        "",
+        ""
+      ],
+      "courseTitle": "高数 · 数学",
+      "progressChip": "已完成 0/3",
+      "rows": 3,
+      "rowTitles": [
+        "函数概念",
+        "数列极限",
+        "函数连续"
+      ],
+      "rowButtons": [
+        "讲义",
+        "打开",
+        "讲义",
+        "打开",
+        "打开"
+      ],
+      "titleTruncated": 0,
+      "emptyText": "把学习资料加进来吧",
+      "dockVisible": false,
+      "dockTab": "ai",
+      "dockTabs": [
+        {
+          "label": "讲义",
+          "selected": "false"
+        },
+        {
+          "label": "AI",
+          "selected": "true"
+        },
+        {
+          "label": "笔记",
+          "selected": "false"
+        }
+      ],
+      "aiHead": [
+        "去设置",
+        "上下文：开",
+        "清空",
+        ""
+      ],
+      "dashTitles": [],
+      "dashLabels": [],
+      "subjNames": [],
+      "docMatch": [
+        {
+          "name": "第一讲.pdf",
+          "idx": 0
+        },
+        {
+          "name": "第二讲 习题.txt",
+          "idx": 1
+        }
+      ],
+      "rects": {
+        "topbar": {
+          "w": 1320,
+          "h": 56,
+          "x": 12,
+          "y": 12
+        },
+        "nav": {
+          "w": 232,
+          "h": 733,
+          "x": 12,
+          "y": 76
+        },
+        "list": {
+          "w": 304,
+          "h": 733,
+          "x": 252,
+          "y": 76
+        },
+        "player": {
+          "w": 768,
+          "h": 733,
+          "x": 564,
+          "y": 76
+        },
+        "ai": {
+          "w": 0,
+          "h": 0,
+          "x": 0,
+          "y": 0
+        },
+        "main": {
+          "w": 1320,
+          "h": 733,
+          "x": 12,
+          "y": 76
+        }
+      },
+      "overflowX": false
+    },
+    "course-light": {
+      "view": "course-light",
+      "theme": "light",
+      "documentTitle": "学习播放器",
+      "topbarButtons": [
+        "",
+        "首页",
+        "AI",
+        "讲义",
+        "目录",
+        "导入",
+        "",
+        "",
+        ""
+      ],
+      "courseTitle": "高数 · 数学",
+      "progressChip": "已完成 0/3",
+      "rows": 3,
+      "rowTitles": [
+        "函数概念",
+        "数列极限",
+        "函数连续"
+      ],
+      "rowButtons": [
+        "讲义",
+        "打开",
+        "讲义",
+        "打开",
+        "打开"
+      ],
+      "titleTruncated": 0,
+      "emptyText": "把学习资料加进来吧",
+      "dockVisible": false,
+      "dockTab": "ai",
+      "dockTabs": [
+        {
+          "label": "讲义",
+          "selected": "false"
+        },
+        {
+          "label": "AI",
+          "selected": "true"
+        },
+        {
+          "label": "笔记",
+          "selected": "false"
+        }
+      ],
+      "aiHead": [
+        "去设置",
+        "上下文：开",
+        "清空",
+        ""
+      ],
+      "dashTitles": [],
+      "dashLabels": [],
+      "subjNames": [],
+      "docMatch": [
+        {
+          "name": "第一讲.pdf",
+          "idx": 0
+        },
+        {
+          "name": "第二讲 习题.txt",
+          "idx": 1
+        }
+      ],
+      "rects": {
+        "topbar": {
+          "w": 1320,
+          "h": 56,
+          "x": 12,
+          "y": 12
+        },
+        "nav": {
+          "w": 232,
+          "h": 733,
+          "x": 12,
+          "y": 76
+        },
+        "list": {
+          "w": 304,
+          "h": 733,
+          "x": 252,
+          "y": 76
+        },
+        "player": {
+          "w": 768,
+          "h": 733,
+          "x": 564,
+          "y": 76
+        },
+        "ai": {
+          "w": 0,
+          "h": 0,
+          "x": 0,
+          "y": 0
+        },
+        "main": {
+          "w": 1320,
+          "h": 733,
+          "x": 12,
+          "y": 76
+        }
+      },
+      "overflowX": false
+    },
+    "ai-dark": {
+      "view": "ai-dark",
+      "theme": "dark",
+      "documentTitle": "学习播放器",
+      "topbarButtons": [
+        "",
+        "首页",
+        "AI",
+        "讲义",
+        "目录",
+        "导入",
+        "",
+        "",
+        ""
+      ],
+      "courseTitle": "高数 · 数学",
+      "progressChip": "已完成 0/3",
+      "rows": 3,
+      "rowTitles": [
+        "函数概念",
+        "数列极限",
+        "函数连续"
+      ],
+      "rowButtons": [
+        "讲义",
+        "打开",
+        "讲义",
+        "打开",
+        "打开"
+      ],
+      "titleTruncated": 0,
+      "emptyText": "把学习资料加进来吧",
+      "dockVisible": true,
+      "dockTab": "ai",
+      "dockTabs": [
+        {
+          "label": "讲义",
+          "selected": "false"
+        },
+        {
+          "label": "AI",
+          "selected": "true"
+        },
+        {
+          "label": "笔记",
+          "selected": "false"
+        }
+      ],
+      "aiHead": [
+        "去设置",
+        "上下文：开",
+        "清空",
+        ""
+      ],
+      "dashTitles": [],
+      "dashLabels": [],
+      "subjNames": [],
+      "docMatch": [
+        {
+          "name": "第一讲.pdf",
+          "idx": 0
+        },
+        {
+          "name": "第二讲 习题.txt",
+          "idx": 1
+        }
+      ],
+      "rects": {
+        "topbar": {
+          "w": 1320,
+          "h": 56,
+          "x": 12,
+          "y": 12
+        },
+        "nav": {
+          "w": 232,
+          "h": 733,
+          "x": 12,
+          "y": 76
+        },
+        "list": {
+          "w": 304,
+          "h": 733,
+          "x": 252,
+          "y": 76
+        },
+        "player": {
+          "w": 420,
+          "h": 733,
+          "x": 564,
+          "y": 76
+        },
+        "ai": {
+          "w": 340,
+          "h": 733,
+          "x": 992,
+          "y": 76
+        },
+        "main": {
+          "w": 1320,
+          "h": 733,
+          "x": 12,
+          "y": 76
+        }
+      },
+      "overflowX": false
+    },
+    "ai-light": {
+      "view": "ai-light",
+      "theme": "light",
+      "documentTitle": "学习播放器",
+      "topbarButtons": [
+        "",
+        "首页",
+        "AI",
+        "讲义",
+        "目录",
+        "导入",
+        "",
+        "",
+        ""
+      ],
+      "courseTitle": "高数 · 数学",
+      "progressChip": "已完成 0/3",
+      "rows": 3,
+      "rowTitles": [
+        "函数概念",
+        "数列极限",
+        "函数连续"
+      ],
+      "rowButtons": [
+        "讲义",
+        "打开",
+        "讲义",
+        "打开",
+        "打开"
+      ],
+      "titleTruncated": 0,
+      "emptyText": "把学习资料加进来吧",
+      "dockVisible": true,
+      "dockTab": "ai",
+      "dockTabs": [
+        {
+          "label": "讲义",
+          "selected": "false"
+        },
+        {
+          "label": "AI",
+          "selected": "true"
+        },
+        {
+          "label": "笔记",
+          "selected": "false"
+        }
+      ],
+      "aiHead": [
+        "去设置",
+        "上下文：开",
+        "清空",
+        ""
+      ],
+      "dashTitles": [],
+      "dashLabels": [],
+      "subjNames": [],
+      "docMatch": [
+        {
+          "name": "第一讲.pdf",
+          "idx": 0
+        },
+        {
+          "name": "第二讲 习题.txt",
+          "idx": 1
+        }
+      ],
+      "rects": {
+        "topbar": {
+          "w": 1320,
+          "h": 56,
+          "x": 12,
+          "y": 12
+        },
+        "nav": {
+          "w": 232,
+          "h": 733,
+          "x": 12,
+          "y": 76
+        },
+        "list": {
+          "w": 304,
+          "h": 733,
+          "x": 252,
+          "y": 76
+        },
+        "player": {
+          "w": 420,
+          "h": 733,
+          "x": 564,
+          "y": 76
+        },
+        "ai": {
+          "w": 340,
+          "h": 733,
+          "x": 992,
+          "y": 76
+        },
+        "main": {
+          "w": 1320,
+          "h": 733,
+          "x": 12,
+          "y": 76
+        }
+      },
+      "overflowX": false
+    },
+    "dashboard-dark": {
+      "view": "dashboard-dark",
+      "theme": "dark",
+      "documentTitle": "学习播放器",
+      "topbarButtons": [
+        "",
+        "首页",
+        "AI",
+        "讲义",
+        "目录",
+        "导入",
+        "",
+        "",
+        ""
+      ],
+      "courseTitle": "高数 · 数学",
+      "progressChip": "已完成 0/3",
+      "rows": 3,
+      "rowTitles": [
+        "函数概念",
+        "数列极限",
+        "函数连续"
+      ],
+      "rowButtons": [
+        "讲义",
+        "打开",
+        "讲义",
+        "打开",
+        "打开"
+      ],
+      "titleTruncated": 0,
+      "emptyText": "把学习资料加进来吧",
+      "dockVisible": false,
+      "dockTab": "ai",
+      "dockTabs": [
+        {
+          "label": "讲义",
+          "selected": "false"
+        },
+        {
+          "label": "AI",
+          "selected": "true"
+        },
+        {
+          "label": "笔记",
+          "selected": "false"
+        }
+      ],
+      "aiHead": [
+        "去设置",
+        "上下文：开",
+        "清空",
+        ""
+      ],
+      "dashTitles": [
+        "继续学习",
+        "科目进度",
+        "本周学习"
+      ],
+      "dashLabels": [
+        "活跃天数",
+        "看完集数",
+        "累计观看",
+        "今日时长"
+      ],
+      "subjNames": [
+        "数学"
+      ],
+      "docMatch": [
+        {
+          "name": "第一讲.pdf",
+          "idx": 0
+        },
+        {
+          "name": "第二讲 习题.txt",
+          "idx": 1
+        }
+      ],
+      "rects": {
+        "topbar": {
+          "w": 1320,
+          "h": 56,
+          "x": 12,
+          "y": 12
+        },
+        "nav": {
+          "w": 0,
+          "h": 0,
+          "x": 0,
+          "y": 0
+        },
+        "list": {
+          "w": 0,
+          "h": 0,
+          "x": 0,
+          "y": 0
+        },
+        "player": {
+          "w": 0,
+          "h": 0,
+          "x": 0,
+          "y": 0
+        },
+        "ai": {
+          "w": 0,
+          "h": 0,
+          "x": 0,
+          "y": 0
+        },
+        "main": {
+          "w": 0,
+          "h": 0,
+          "x": 0,
+          "y": 0
+        }
+      },
+      "overflowX": false
+    },
+    "dashboard-light": {
+      "view": "dashboard-light",
+      "theme": "light",
+      "documentTitle": "学习播放器",
+      "topbarButtons": [
+        "",
+        "首页",
+        "AI",
+        "讲义",
+        "目录",
+        "导入",
+        "",
+        "",
+        ""
+      ],
+      "courseTitle": "高数 · 数学",
+      "progressChip": "已完成 0/3",
+      "rows": 3,
+      "rowTitles": [
+        "函数概念",
+        "数列极限",
+        "函数连续"
+      ],
+      "rowButtons": [
+        "讲义",
+        "打开",
+        "讲义",
+        "打开",
+        "打开"
+      ],
+      "titleTruncated": 0,
+      "emptyText": "把学习资料加进来吧",
+      "dockVisible": false,
+      "dockTab": "ai",
+      "dockTabs": [
+        {
+          "label": "讲义",
+          "selected": "false"
+        },
+        {
+          "label": "AI",
+          "selected": "true"
+        },
+        {
+          "label": "笔记",
+          "selected": "false"
+        }
+      ],
+      "aiHead": [
+        "去设置",
+        "上下文：开",
+        "清空",
+        ""
+      ],
+      "dashTitles": [
+        "继续学习",
+        "科目进度",
+        "本周学习"
+      ],
+      "dashLabels": [
+        "活跃天数",
+        "看完集数",
+        "累计观看",
+        "今日时长"
+      ],
+      "subjNames": [
+        "数学"
+      ],
+      "docMatch": [
+        {
+          "name": "第一讲.pdf",
+          "idx": 0
+        },
+        {
+          "name": "第二讲 习题.txt",
+          "idx": 1
+        }
+      ],
+      "rects": {
+        "topbar": {
+          "w": 1320,
+          "h": 56,
+          "x": 12,
+          "y": 12
+        },
+        "nav": {
+          "w": 0,
+          "h": 0,
+          "x": 0,
+          "y": 0
+        },
+        "list": {
+          "w": 0,
+          "h": 0,
+          "x": 0,
+          "y": 0
+        },
+        "player": {
+          "w": 0,
+          "h": 0,
+          "x": 0,
+          "y": 0
+        },
+        "ai": {
+          "w": 0,
+          "h": 0,
+          "x": 0,
+          "y": 0
+        },
+        "main": {
+          "w": 0,
+          "h": 0,
+          "x": 0,
+          "y": 0
+        }
+      },
+      "overflowX": false
+    },
+    "empty-dark": {
+      "view": "empty-dark",
+      "theme": "dark",
+      "documentTitle": "学习播放器",
+      "topbarButtons": [
+        "",
+        "首页",
+        "AI",
+        "讲义",
+        "目录",
+        "导入",
+        "",
+        "",
+        ""
+      ],
+      "courseTitle": "",
+      "progressChip": "",
+      "rows": 0,
+      "rowTitles": [],
+      "rowButtons": [],
+      "titleTruncated": 0,
+      "emptyText": "把学习资料加进来吧",
+      "dockVisible": false,
+      "dockTab": "ai",
+      "dockTabs": [
+        {
+          "label": "讲义",
+          "selected": "false"
+        },
+        {
+          "label": "AI",
+          "selected": "true"
+        },
+        {
+          "label": "笔记",
+          "selected": "false"
+        }
+      ],
+      "aiHead": [
+        "去设置",
+        "上下文：开",
+        "清空",
+        ""
+      ],
+      "dashTitles": [],
+      "dashLabels": [],
+      "subjNames": [],
+      "docMatch": [],
+      "rects": {
+        "topbar": {
+          "w": 1320,
+          "h": 56,
+          "x": 12,
+          "y": 12
+        },
+        "nav": {
+          "w": 232,
+          "h": 733,
+          "x": 12,
+          "y": 76
+        },
+        "list": {
+          "w": 304,
+          "h": 733,
+          "x": 252,
+          "y": 76
+        },
+        "player": {
+          "w": 768,
+          "h": 733,
+          "x": 564,
+          "y": 76
+        },
+        "ai": {
+          "w": 0,
+          "h": 0,
+          "x": 0,
+          "y": 0
+        },
+        "main": {
+          "w": 1320,
+          "h": 733,
+          "x": 12,
+          "y": 76
+        }
+      },
+      "overflowX": false
+    },
+    "empty-light": {
+      "view": "empty-light",
+      "theme": "light",
+      "documentTitle": "学习播放器",
+      "topbarButtons": [
+        "",
+        "首页",
+        "AI",
+        "讲义",
+        "目录",
+        "导入",
+        "",
+        "",
+        ""
+      ],
+      "courseTitle": "",
+      "progressChip": "",
+      "rows": 0,
+      "rowTitles": [],
+      "rowButtons": [],
+      "titleTruncated": 0,
+      "emptyText": "把学习资料加进来吧",
+      "dockVisible": false,
+      "dockTab": "ai",
+      "dockTabs": [
+        {
+          "label": "讲义",
+          "selected": "false"
+        },
+        {
+          "label": "AI",
+          "selected": "true"
+        },
+        {
+          "label": "笔记",
+          "selected": "false"
+        }
+      ],
+      "aiHead": [
+        "去设置",
+        "上下文：开",
+        "清空",
+        ""
+      ],
+      "dashTitles": [],
+      "dashLabels": [],
+      "subjNames": [],
+      "docMatch": [],
+      "rects": {
+        "topbar": {
+          "w": 1320,
+          "h": 56,
+          "x": 12,
+          "y": 12
+        },
+        "nav": {
+          "w": 232,
+          "h": 733,
+          "x": 12,
+          "y": 76
+        },
+        "list": {
+          "w": 304,
+          "h": 733,
+          "x": 252,
+          "y": 76
+        },
+        "player": {
+          "w": 768,
+          "h": 733,
+          "x": 564,
+          "y": 76
+        },
+        "ai": {
+          "w": 0,
+          "h": 0,
+          "x": 0,
+          "y": 0
+        },
+        "main": {
+          "w": 1320,
+          "h": 733,
+          "x": 12,
+          "y": 76
+        }
+      },
+      "overflowX": false
+    }
+  }
+}

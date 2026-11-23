@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>图5 渲染策略对比</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .track { display: flex; align-items: stretch; gap: 0; }
+  .step { flex: 1; background: #fff; border: 1px solid #d8e0ea; border-radius: 10px; padding: 10px 12px; position: relative; }
+  .step .k { font-size: 10px; letter-spacing: 1px; color: #94a3b8; font-weight: 700; }
+  .step .t { font-size: 12.5px; font-weight: 600; margin-top: 3px; }
+  .step .s { font-size: 10.5px; color: #64748b; margin-top: 4px; line-height: 1.5; }
+  .step.bad { background: #fdf3f4; border-color: #f0b9bd; }
+  .step.good { background: #f2fbf6; border-color: #b8e3cc; }
+  .step code { font-family: Consolas, monospace; font-size: 10.5px; color: #334155; }
+  .arr { flex: none; width: 26px; display: flex; align-items: center; justify-content: center; color: #b6c2d2; font-size: 15px; }
+
+  .mini { display: flex; gap: 6px; align-items: flex-start; }
+  .mini-list { width: 148px; background: #fff; border: 1px solid #d8e0ea; border-radius: 8px; padding: 6px; }
+  .mini-list .h { height: 6px; width: 52px; background: #e2e8f0; border-radius: 3px; margin-bottom: 6px; }
+  .mini-list .r { height: 13px; border-radius: 3px; margin: 3px 0; background: #f1f5f9; border: 1px solid #eef2f7; }
+  .mini-list .r.chg { background: #e7f6ef; border-color: #a9ddc3; }
+  .mini-list .r.del { background: #fdecee; border-color: #f4c6ca; }
+  .mini-note { flex: 1; min-width: 0; font-size: 10.5px; color: #64748b; line-height: 1.6; padding-top: 2px; }
+  .mini-note b { color: #0f172a; }
+  .metric-row { flex: none; width: 452px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .metric { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; }
+  .metric b { display: block; font-size: 15px; }
+  .metric span { color: #7c8798; font-size: 10px; }
+  .metric.red b { color: #d93b45; }
+  .metric.green b { color: #0b8a5a; }
+  pre.code { margin: 0; background: #0f172a; color: #cbd5e1; border-radius: 8px; padding: 10px 12px; font-family: Consolas, monospace; font-size: 10.5px; line-height: 1.65; overflow: hidden; }
+  pre.code .c { color: #64748b; }
+  pre.code .k { color: #93c5fd; }
+  pre.code .s { color: #86efac; }
+</style>
+</head>
+<body>
+<div id="zoom">
+<figure class="fig">
+  <header class="fig-head">
+    <div class="kicker">图 5 · 渲染策略</div>
+    <h1>分集列表：从「整表重建」到「按 key 打补丁」</h1>
+    <p class="sub">现状每次进度落盘（每 3 秒）都会把 99 行全部重建；数据量小的时候只是抖动，课程变多、加入预览图之后就是可见的卡顿与交互状态丢失</p>
+  </header>
+
+  <div class="stage">
+    <div class="tier-label"><span class="tag">现状</span><span class="plain">一次状态变化 = 一次全量重建</span></div>
+    <div class="track">
+      <div class="step bad"><div class="k">STEP 1</div><div class="t">timeupdate / 暂停 / 换集</div><div class="s">节流 3s 调用 <code>persistProgressNow()</code></div></div>
+      <div class="arr">→</div>
+      <div class="step bad"><div class="k">STEP 2</div><div class="t">写盘 + 重渲染</div><div class="s"><code>updateStore()</code> 之后同步调 <code>renderEpisodes()</code> / <code>renderSidebar()</code></div></div>
+      <div class="arr">→</div>
+      <div class="step bad"><div class="k">STEP 3</div><div class="t">清空容器</div><div class="s"><code>list.innerHTML = ''</code> 后逐行 <code>createElement</code>，99 行 × 模板字符串</div></div>
+      <div class="arr">→</div>
+      <div class="step bad"><div class="k">STEP 4</div><div class="t">整棵子树替换</div><div class="s">787 个 DOM 节点重建；每行 2 个按钮各自绑监听；悬停预览与焦点状态随之丢失</div></div>
+    </div>
+
+    <div class="row" style="margin-top:14px; align-items:center">
+      <div class="mini" style="flex:1">
+        <div class="mini-list">
+          <div class="h"></div>
+          <div class="r del"></div><div class="r del"></div><div class="r del"></div><div class="r del"></div>
+          <div class="r del"></div><div class="r del"></div><div class="r del"></div><div class="r del"></div>
+          <div class="r del"></div><div class="r del"></div><div class="r del"></div><div class="r del"></div>
+        </div>
+        <div class="mini-note"><b>红色 = 被销毁重建的行</b><br>即使只有 1 行的百分比变了，99 行全部换新节点；<code>:hover</code> 样式、滚动锚点、正在打开的浮层都要重新建立。</div>
+      </div>
+      <div class="metric-row">
+        <div class="metric red"><b>787</b><span>每次重建的节点数</span></div>
+        <div class="metric red"><b>99+</b><span>逐行事件监听器</span></div>
+        <div class="metric red"><b>3s</b><span>重建触发周期</span></div>
+        <div class="metric red"><b>100%</b><span>行节点替换率</span></div>
+      </div>
+    </div>
+
+    <div class="tier-label" style="margin-top:24px"><span class="tag">目标</span><span class="plain">订阅到切片，只改变化的行</span></div>
+    <div class="track">
+      <div class="step good"><div class="k">STEP 1</div><div class="t">action</div><div class="s"><code>progress.record(path, position)</code>，顺带 <code>persist.queue()</code></div></div>
+      <div class="arr">→</div>
+      <div class="step good"><div class="k">STEP 2</div><div class="t">store.set</div><div class="s">不可变更新 <code>playback</code> 切片，同一帧内合并多次写入</div></div>
+      <div class="arr">→</div>
+      <div class="step good"><div class="k">STEP 3</div><div class="t">selector 求差</div><div class="s">列表订阅 <code>s =&gt; s.library.episodes</code> 与 <code>s =&gt; s.playback.position</code>，得到变化的 key 集合</div></div>
+      <div class="arr">→</div>
+      <div class="step good"><div class="k">STEP 4</div><div class="t">list.patch(keys)</div><div class="s">复用节点，只写 <code>.pct</code> 文本与 <code>.st</code> / <code>.active</code> class；容器上 1 个委托监听</div></div>
+    </div>
+
+    <div class="row" style="margin-top:14px; align-items:center">
+      <div class="mini" style="flex:1">
+        <div class="mini-list">
+          <div class="h"></div>
+          <div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div>
+          <div class="r chg"></div><div class="r"></div><div class="r"></div><div class="r"></div>
+          <div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div>
+        </div>
+        <div class="mini-note"><b>绿色 = 唯一被更新的行</b><br>DOM 节点、焦点、悬停、浮层全部保持；滚动位置不需要人工维护，因为容器没有被清空。</div>
+      </div>
+      <div class="metric-row">
+        <div class="metric green"><b>1</b><span>被更新的行</span></div>
+        <div class="metric green"><b>1</b><span>容器级委托监听</span></div>
+        <div class="metric green"><b>0</b><span>节点重建</span></div>
+        <div class="metric green"><b>O(变化)</b><span>复杂度</span></div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:18px; align-items:stretch">
+      <pre class="code" style="flex:1.25"><span class="c">// ui/list-patch.js —— 约 35 行，无依赖</span>
+<span class="k">export function</span> <span class="k">patchRows</span>(container, items, { key, create, update }) {
+  <span class="k">const</span> alive = <span class="k">new</span> Map([...container.children].map(n =&gt; [n.dataset.key, n]));
+  <span class="k">let</span> cursor = 0;
+  <span class="k">for</span> (<span class="k">const</span> item <span class="k">of</span> items) {
+    <span class="k">const</span> k = key(item);
+    <span class="k">let</span> node = alive.get(k);
+    <span class="k">if</span> (node) alive.delete(k); <span class="k">else</span> { node = create(item); node.dataset.key = k; }
+    update(node, item);                       <span class="c">// 内部自行判等，未变则零写入</span>
+    <span class="k">const</span> ref = container.children[cursor];
+    <span class="k">if</span> (ref !== node) container.insertBefore(node, ref || <span class="k">null</span>);
+    cursor++;
+  }
+  <span class="k">for</span> (<span class="k">const</span> n <span class="k">of</span> alive.values()) n.remove();
+}</pre>
+      <div class="card" style="flex:1">
+        <div class="c-title"><span>配套改动</span></div>
+        <div class="c-sub" style="line-height:1.75">
+          <b>· 事件委托</b>：<span class="mono">list.addEventListener('click', …)</span> 统一处理播放 / 打开 / 讲义，行内不再绑定闭包；<br>
+          <b>· 悬停预览</b>：改为 <span class="mono">mouseover</span> 委托 + <span class="mono">data-path</span> 查表，预览节点常驻 DOM；<br>
+          <b>· 时长补全</b>：由「进入课程即串行探测 99 次」改为 <span class="mono">IntersectionObserver</span> 只探测可视区（约 12 行），滚动时续探；<br>
+          <b>· 缩略图</b>：内存 LRU 上限 100 张，磁盘缓存不变。
+        </div>
+        <div class="c-sub" style="margin-top:10px; padding-top:10px; border-top:1px dashed #dde5ef">
+          <b>为什么先不上虚拟滚动</b>：单课程最多 99 行，节点复用后一次 patch 只写 1 行，性能已足够；虚拟滚动会带来行高测量、滚动锚点、悬停预览定位三类新问题。<br>
+          预留升级路径：当单个列表超过 <span class="mono">500</span> 行或出现「跨课程连续播放」时，再把 <span class="mono">patchRows</span> 换成窗口化的同一接口。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="footnote">说明：现状 99 行全量重建的 JS 耗时约 1.1ms（实测），真正的问题不是 CPU，而是<b>交互状态与 DOM 身份丢失</b>——悬停预览、焦点、打开的讲义浮层都与具体节点绑定。节点复用后这些问题一并消失，也让后续加入「笔记行」「章节分组」不会恶化。</p>
+</figure>
+</div>
+<script>
+  (function () {
+    const s = new URLSearchParams(location.search).get('scale') || '1';
+    document.documentElement.dataset.scale = s;
+    document.getElementById('zoom').style.zoom = s;
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>图1 现状架构与耦合</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="zoom">
+<figure class="fig">
+  <header class="fig-head">
+    <div class="kicker">图 1 · 现状</div>
+    <h1>渲染层是「一个脚本 + 一百个 id」的单体结构</h1>
+    <p class="sub">v0.4.4 · Electron 44.4.2 / Chromium 152 · 红圈编号对应底部四条结构性问题（统计口径见方案附录 D）</p>
+  </header>
+
+  <div class="stage" id="stage">
+    <div class="tier">
+      <div class="tier-label"><span class="tag">主进程</span><span class="plain">Electron Main · Node 22 · 唯一有文件系统权限的一侧</span></div>
+      <div class="row">
+        <div class="card" style="flex:1.6">
+          <div class="c-title"><span class="mono">main.js</span><span>567 行</span><span class="badge-line">窗口 / IPC / 扫描 / ffmpeg</span></div>
+          <div class="chips">
+            <span class="chip">目录扫描（深度≤2）</span>
+            <span class="chip">learn.json 读写</span>
+            <span class="chip">ffmpeg 串行队列</span>
+            <span class="chip">转封装 remux</span>
+            <span class="chip">缩略图缓存</span>
+          </div>
+          <div class="c-sub">⚠ 与渲染层各写了一份分集解析：<span class="mono">parseEpisodeKey / displayTitle / sortEpisodes</span>，规则靠人工同步。</div>
+        </div>
+        <div class="card tint" style="flex:1">
+          <div class="c-title"><span class="mono">ai-bridge.js</span><span>279 行</span></div>
+          <div class="chips">
+            <span class="chip">net + SSE 流式</span>
+            <span class="chip">错误分类</span>
+            <span class="chip">截帧</span>
+            <span class="chip">历史文件代理</span>
+          </div>
+          <div class="c-sub">状态全在渲染层，主进程只做无状态转发 —— 这个边界是对的，重构时保留。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bridge">
+      <span class="num">4</span>
+      <b>preload.js</b><span>64 行</span><span>·</span><span>contextBridge</span><span>·</span>
+      <span class="mono">window.api</span><span>26 个方法，参数与返回值无类型、无契约校验</span>
+    </div>
+
+    <div class="frame">
+      <div class="tier-label"><span class="tag">渲染层</span><span class="plain">file:// + 严格 CSP（style-src 'self' / script-src 'self'）· 无框架 / 无构建</span></div>
+
+      <div class="row">
+        <div class="card" style="flex:1">
+          <div class="c-title"><span class="mono">index.html</span><span>250 行</span></div>
+          <div class="stats">
+            <div class="stat blue"><b>100</b><span>个 id</span></div>
+            <div class="stat"><b>7</b><span>顶栏按钮</span></div>
+            <div class="stat"><b>9</b><span>浮层 / 浮条</span></div>
+          </div>
+          <div class="c-sub">顶栏、三栏、看板、2 个弹窗、按钮与列表行全部写死在骨架里；vendor 4 个脚本靠 <span class="mono">?v=7</span> 手动破缓存。</div>
+        </div>
+
+        <div class="card accent" style="flex:1.55">
+          <div class="c-title"><span class="mono">renderer.js</span><span>1382 行</span><span class="badge-line">48 个函数 · 27 个顶层变量 · 1 个全局 state</span></div>
+          <div class="chips">
+            <span class="chip">主题</span><span class="chip">树</span><span class="chip">分集</span><span class="chip">播放器</span>
+            <span class="chip">进度</span><span class="chip">转封装</span><span class="chip">快捷键</span><span class="chip">分隔条</span>
+            <span class="chip">讲义</span><span class="chip">导入</span><span class="chip">拖拽</span><span class="chip">搜索</span>
+            <span class="chip">看板</span><span class="chip">设置</span>
+          </div>
+          <div class="stats">
+            <div class="stat"><b>148</b><span>$() 直接取 id</span></div>
+            <div class="stat"><b>40</b><span>addEventListener</span></div>
+            <div class="stat"><b>30</b><span>.on* = 赋值</span></div>
+            <div class="stat red"><b>28</b><span>innerHTML 拼接</span></div>
+            <div class="stat red"><b>24</b><span>esc() 转义</span></div>
+          </div>
+        </div>
+
+        <div class="card danger" style="flex:1">
+          <div class="c-title"><span class="num">1</span><span class="mono">ai.js</span><span>480 行</span></div>
+          <div class="chips">
+            <span class="chip red">会话状态机</span>
+            <span class="chip">KaTeX 占位符管线</span>
+            <span class="chip">截图条</span>
+            <span class="chip">设置区块</span>
+          </div>
+          <div class="c-sub"><b>反向依赖</b> renderer.js 的词法全局：<span class="mono">state / video / $() / esc() / fmtTime / showToast</span>；并重写 <span class="mono">$('btnSettings').onclick</span>、轮询 <span class="mono">state.store</span> 最多 5 秒才启动。</div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:20px">
+        <div class="card" style="flex:1.55">
+          <div class="c-title"><span class="num">3</span><span class="mono">style.css</span><span>569 行 · 约 230 条规则</span></div>
+          <div class="stats">
+            <div class="stat red"><b>57</b><span>个 #id 选择器</span></div>
+            <div class="stat"><b>376</b><span>处硬编码 px</span></div>
+            <div class="stat"><b>4</b><span>处 !important</span></div>
+            <div class="stat"><b>3</b><span>处 :has()</span></div>
+          </div>
+          <div class="c-sub">栏宽 232 / 320 / 360 写死；浮层位置写死 <span class="mono">left:564px</span> / <span class="mono">right:210px</span>；面板显隐靠 <span class="mono">body:has(#aiPanel.hidden)</span> 反向驱动，DOM 结构一动 CSS 就失效。</div>
+        </div>
+        <div class="card danger" style="flex:1">
+          <div class="c-title"><span class="num">2</span><span class="mono">mac/renderer/</span><span>整份复制</span></div>
+          <div class="c-sub" style="margin-top:8px">
+            与根目录逐文件对比：<span class="mono">renderer.js</span> 仅差 <b>4 行</b>（路径分隔符），<span class="mono">ai.js</span>、<span class="mono">index.html</span> <b>完全相同</b>。<br>
+            结论：任何一次界面重构都要在两处各做一遍，且 mac 真机尚未验收，漂移无人发现。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="item"><span class="n">1</span><div><b>隐式全局与加载顺序。</b>脚本顺序即依赖顺序；ai.js 反向读取 renderer.js 的 <span class="mono">const</span> 词法绑定，ai.js 启动靠 25ms 轮询等 store。任何拆分都要先解决这个环。</div></div>
+    <div class="item"><span class="n">2</span><div><b>双端整份复制。</b>渲染层被复制进 <span class="mono">mac/</span>，没有共享源与平台适配层；改一次界面 = 两次实现 + 两次验证。</div></div>
+    <div class="item"><span class="n">3</span><div><b>样式与结构强耦合。</b>57 个 id 选择器直接绑死 DOM 结构，改结构必改 CSS；动态定位绕 CSP 只能改 CSSOM，还带写死的兜底坐标。</div></div>
+    <div class="item"><span class="n">4</span><div><b>IPC 无契约。</b>26 个方法手写在 preload，参数与返回值靠调用方自觉；没有共享模型定义，主/渲染两侧的分集解析已经各自演化。</div></div>
+  </div>
+
+  <p class="footnote">读法：红框 = 需要拆掉的耦合；蓝框 = 需要保留并抽出的核心。测量方法：<span class="mono">wc -l</span>、正则计数（<span class="mono">innerHTML / $() / addEventListener / .on*= / #id</span>）、CDP <span class="mono">Runtime.evaluate</span> 运行时探针；未做任何代码改动。</p>
+</figure>
+</div>
+<script>
+  (function () {
+    const s = new URLSearchParams(location.search).get('scale') || '1';
+    document.documentElement.dataset.scale = s;
+    document.getElementById('zoom').style.zoom = s;
+  })();
+</script>
+</body>
+</html>

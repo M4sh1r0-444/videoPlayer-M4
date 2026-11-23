@@ -1,0 +1,89 @@
+{
+  "name": "video-study-player",
+  "productName": "学习播放器",
+  "version": "0.4.4",
+  "description": "本地视频学习播放器：科目/课程/分集管理、续播、讲义关联、转封装内播、AI 提问侧边栏",
+  "author": "vdsplayer",
+  "main": "main.js",
+  "scripts": {
+    "start": "npm run build && electron .",
+    "build": "node scripts/build.mjs",
+    "sync-vendor": "node scripts/sync-vendor.mjs",
+    "pretest": "npm run build",
+    "test": "node --test \"test/*.test.mjs\"",
+    "presmoke": "npm run build",
+    "smoke": "node scripts/smoke.mjs",
+    "smoke:packaged": "node scripts/smoke.mjs --packaged",
+    "smoke:baseline": "node scripts/smoke.mjs --write-baseline",
+    "fixture": "node scripts/fixtures/gen-fixture.mjs",
+    "icon": "node scripts/gen-icon.js",
+    "icon:mac": "node scripts/gen-icon.js --mac-only",
+    "dist": "npm run build && electron-builder --win nsis portable --x64",
+    "dist:dir": "npm run build && electron-builder --dir",
+    "dist:mac": "npm run build && electron-builder --mac"
+  },
+  "devDependencies": {
+    "dompurify": "3.4.15",
+    "electron": "44.4.2",
+    "electron-builder": "^26.0.12",
+    "esbuild": "0.28.2",
+    "katex": "0.16.47",
+    "marked": "18.0.14"
+  },
+  "build": {
+    "appId": "com.vdsplayer.app",
+    "productName": "学习播放器",
+    "copyright": "Copyright © 2026 vdsplayer",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "ai-bridge.js",
+      "preload.js",
+      "platform.js",
+      "renderer/**/*",
+      "package.json"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "学习播放器-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "学习播放器-Portable-${version}.${ext}"
+    },
+    "mac": {
+      "category": "public.app-category.education",
+      "icon": "build/icon.icns",
+      "identity": null,
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "学习播放器-${version}-${arch}.${ext}"
+    }
+  }
+}
