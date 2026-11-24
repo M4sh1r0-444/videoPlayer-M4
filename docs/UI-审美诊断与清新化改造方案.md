@@ -6,10 +6,6 @@
 > 结论性质：视觉方案，不改功能与数据；Phase 1 可以做到只改 `style.css`  
 > 后续：清新化落地后，界面已继续演进为「液态玻璃 + 悬浮面板」，色板与字体层级保持不变，见 `docs/UI-液态玻璃与悬浮面板改造.md`。
 
-![界面审美检查 · 关键证据](<../ui-audit/审美检查-证据板.png>)
-
-![清新 · 简约 · 通透 · 设计语言板](<../ui-audit/清新化设计语言板.png>)
-
 ---
 
 ## 0. 摘要
@@ -459,7 +455,7 @@ line-height: 1.6;
 4. 看板加页面标题、最大宽度、特色卡、统计容器。
 5. 设置弹窗分组；AI composer 收口；toast/popover 玻璃化。
 6. 若采用青绿主色：同步 `scripts/gen-icon.js` 的图标色并执行 `npm run icon`；同时更新 `main.js` 窗口背景色（仅 1 行，可选）。
-7. 若 Phase 2 改动了按钮文案、空状态结构或页面标题，运行 `npm run smoke:baseline` 更新 DOM 快照与截图，并在 `docs/refactor/baseline/README.md` 记录每张图的预期变化；旧基线保留在 `.backup` 便于回滚。
+7. 若 Phase 2 改动了按钮文案、空状态结构或页面标题，运行 `npm run smoke:baseline` 更新 DOM 快照与截图，并在 `docs/refactor/baseline/README.md` 记录每张图的预期变化；旧基线保留在本地备份目录便于回滚。
 
 ### 5.4 验收方法
 

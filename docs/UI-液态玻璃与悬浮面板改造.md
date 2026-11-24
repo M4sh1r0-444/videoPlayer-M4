@@ -6,12 +6,8 @@
 
 > **2026-11 更新**：本文的材质层（1px 高光描边 + 斜向高光带）已被「无边框 · 阴影 · 磨砂玻璃」取代，现状以 `renderer/style.css` 头部说明为准。
 > 仍然有效的部分：两套色板、第 2.3 节的悬浮几何（12px 留白 / 8px 间隙 / 20px 圆角）、第 4 节断点与第 5 节层叠结论。
-> 第 8 节的回滚步骤已不适用：恢复本文描述的样子，直接用 `.backup/pre-frosted-20261123-230808/renderer/style.css` 覆盖即可。
-> 下文的截图已改为指向改造前的留档。
-
-![浅色 · 课程页](../ui-audit/baseline-before-frosted/course-light.png)
-
-![深色 · 课程页](../ui-audit/baseline-before-frosted/course-dark.png)
+> 第 8 节的回滚步骤已不适用：恢复本文描述的样子，直接用改造前留档的 `renderer/style.css`（本地备份，未入库）覆盖即可。
+> 文中原本引用的界面截图（改造前留档与抽查输出）未入库，此处已省略。
 
 ---
 
@@ -136,13 +132,7 @@ smoke 额外覆盖并全部通过：
 - 无未捕获异常、无 console.error、无 CSP violation；
 - `?legacy=1` 旧界面同样叠加玻璃材质，功能不受影响。
 
-补充抽查脚本：`node ui-audit/capture-liquid.mjs`，输出到 `ui-audit/liquid-shots/`，覆盖 1100 / 980 断点、深色设置、浅色导入、浅色帮助与悬停预览。
-
-![浅色 · 导入弹窗](../ui-audit/liquid-shots/import-light.png)
-
-![980 · AI 浮层](../ui-audit/liquid-shots/980-ai-dark.png)
-
-![深色 · 设置弹窗](../ui-audit/liquid-shots/settings-dark.png)
+补充抽查脚本：`node ui-audit/capture-liquid.mjs`，覆盖 1100 / 980 断点、深色设置、浅色导入、浅色帮助与悬停预览（截图写在 `ui-audit/` 下，不入库）。
 
 ---
 
@@ -162,7 +152,7 @@ smoke 额外覆盖并全部通过：
 
 1. 删除 `style.css` 末尾 `Liquid Glass · 悬浮面板` 整段，以及 `:root / body.light` 中新增的 `--shell-* / --glass-* / --ambient-*` token；
 2. 恢复停靠区公式 `24px → 0`、`276px → 280px`，删除 1072–1119 的临时媒体查询；
-3. 如需恢复视觉基线，使用 `ui-audit/baseline-before-liquid/` 中的旧截图与 `dom-snapshot.json`；
+3. 如需恢复视觉基线，取回改造前留档的截图与 `dom-snapshot.json`（未入库）；
 4. 无需重新构建 JS，入口 hash 不受 CSS 影响。
 
 ---
