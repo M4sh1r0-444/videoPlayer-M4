@@ -997,7 +997,7 @@ async function runLibrary(fixture) {
 async function runRealData() {
   const snapshotPath = path.join(ROOT, '.backup', 'v0.4.4-20261022-225826', 'learn.json.snapshot');
   if (!fs.existsSync(snapshotPath)) {
-    check(false, '真实 99 集数据快照存在', snapshotPath);
+    console.log('\n[P3] 真实 99 集：未找到本机数据快照，跳过（该快照不入库，只有本机才有）');
     return;
   }
   const store = JSON.parse(fs.readFileSync(snapshotPath, 'utf8'));
@@ -1447,7 +1447,7 @@ function diffObjects(expected, actual, prefix = '') {
 
 (async () => {
   if (!fs.existsSync(ELECTRON)) {
-    console.error(`未找到 Electron：${ELECTRON}\n先执行 npm install`);
+    console.error(`未找到 Electron：${ELECTRON}\n先执行 npx install-electron 下载 Electron 二进制（或先运行一次 npm start，会自动下载）`);
     process.exit(1);
   }
   fs.mkdirSync(BASELINE_DIR, { recursive: true });

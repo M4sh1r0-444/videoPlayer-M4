@@ -1,0 +1,2 @@
+# 构建会逐字节校验 renderer/vendor（scripts/sync-vendor.mjs --check），换行符转换会让 Windows 上默认 autocrlf=true 的克隆构建失败，所以所有文件都不做换行符转换。
+* -text

@@ -4,6 +4,10 @@
   "version": "0.4.4",
   "description": "本地视频学习播放器：科目/课程/分集管理、续播、讲义关联、转封装内播、AI 提问侧边栏",
   "author": "vdsplayer",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "main": "main.js",
   "scripts": {
     "start": "npm run build && electron .",
@@ -20,7 +24,8 @@
     "icon:mac": "node scripts/gen-icon.js --mac-only",
     "dist": "npm run build && electron-builder --win nsis portable --x64",
     "dist:dir": "npm run build && electron-builder --dir",
-    "dist:mac": "npm run build && electron-builder --mac"
+    "dist:mac": "npm run build && electron-builder --mac",
+    "postinstall": "install-electron"
   },
   "devDependencies": {
     "dompurify": "3.4.15",
